@@ -1,0 +1,11 @@
+[alias]
+    co = checkout
+    ci = commit
+    st = status
+    br = branch
+[user]
+    name = Július Milan
+    email = jmilan.dev@gmail.com
+[diff]
+    tool = diffuse
+

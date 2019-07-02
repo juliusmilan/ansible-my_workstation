@@ -1,0 +1,48 @@
+- name: Install development packages.
+  dnf:
+    name: ['git',
+           'diffuse',
+           'gtk-murrine-engine', # suppress diffuse Gtk warnings
+           'gnuplot',
+           # C/C++
+           'clang',
+           'cmake',
+           'flex',
+           'bison',
+           'gcc',
+           'gcc-c++',
+           'libcxx',
+           'libcxx-devel',
+           'perf',
+           'valgrind',
+           # Python
+           'python3-ipython',
+           # Haskell
+           'haskell-platform',
+#          'stack',
+           # Prolog
+           'pl']
+
+#- name: Configure git.
+#  copy:
+#    src: gitconfig
+#    dest: /home/{{ user }}/.gitconfig
+#    owner: "{{ user }}"
+#    group: "{{ user }}"
+#
+#- name: Enable kitty Copr.
+#  command: "dnf copr enable -y oleastre/kitty-terminal"
+#
+#- name: Install kitty terminal emulator.
+#  dnf:
+#    name: kitty
+#    enablerepo: oleastre/kitty-terminal
+#    state: present
+#
+#- name: Install .gdbinit.
+#  copy:
+#    src: gdbinit
+#    dest: /home/{{ user }}/.gdbinit
+#    owner: "{{ user }}"
+#    group: "{{ user }}"
+#

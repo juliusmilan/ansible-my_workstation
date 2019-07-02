@@ -1,0 +1,87 @@
+#- name: Update all installed packages.
+#  dnf:
+#    name: '*'
+#    state: latest
+#
+#- name: Install libselinux-python to set selinux from ansible.
+#  dnf:
+#    name: libselinux-python
+#    state: present
+#
+#- name: Put SELinux in permissive mode, logging actions that would be blocked.
+#  selinux:
+#    policy: targeted
+#    state: permissive
+#
+#- name: Install chromium.
+#  dnf:
+#    name: chromium
+#    state: present
+#
+## add parameters to lines like "Exec=chromium-browser %U"
+#- name: Configure chromium to disable disk cache.
+#  replace:
+#    backup: yes
+#    dest: /usr/share/applications/chromium-browser.desktop
+#    regexp: '^(Exec=(?!.*\b --incognito --disk-cache-dir=/dev/null --disk-cache-size=1\b).*)$'
+#    replace: '\1 --incognito --disk-cache-dir=/dev/null --disk-cache-size=1'
+#
+#- name: Enable RPM Fusion.
+#  dnf:
+#    name: https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ fedora_version }}.noarch.rpm
+#    state: installed
+#
+#- name: Install packages.
+#  dnf:
+#    name: ['copyq',
+#           'hexchat',
+#           'htop',
+#           'hwinfo',
+#           'lm_sensors',
+#           'lshw',
+#           'nmap',
+#           'p7zip',
+#           'redshift',
+#           'texmaker',
+#           'workrave',
+#           'youtube-dl',
+#           'vlc']
+#
+#- name: Install the 'Cinnamon Desktop' package group.
+#  dnf:
+#    name: '@Cinnamon Desktop'
+#    state: present
+#
+#- name: Install KVM / QEMU.
+#  dnf:
+#    name: ['bridge-utils',
+#           'libvirt',
+#           'virt-install',
+#           'qemu-kvm',
+#           'virt-top',
+#           'libguestfs-tools',
+#           'virt-manager']
+#
+#- name: Start and enable libvirtd.
+#  systemd:
+#    name: libvirtd
+#    state: started
+#    enabled: yes
+#
+#- name: Copy .bashrc_my.
+#  copy:
+#    src: bashrc_my
+#    dest: /home/{{ user }}/.bashrc_my
+#    owner: "{{ user }}"
+#    group: "{{ user }}"
+#
+#- name: Setup .bashrc to source .bashrc_my.
+#  lineinfile:
+#    path: /home/{{ user }}/.bashrc
+#    line: '. ~/.bashrc_my'
+#    create: yes
+
+# TODO
+# notes
+# browseer bookmarks
+# clone linux ws

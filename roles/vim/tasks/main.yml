@@ -1,0 +1,38 @@
+- name: Install VIM.
+  dnf:
+    name: vim-enhanced
+    state: present
+
+- name: Install VIM related packages.
+  dnf:
+    name: ['cscope',
+           'ctags']
+
+- name: Install update_cscope script.
+  copy:
+    src: update_cscope
+    dest: /usr/local/bin/update_cscope
+    owner: root
+    group: root
+    mode: 0755
+
+- file:
+    path: /home/{{ user }}/.vim/autoload/
+    state: directory
+    owner: "{{ user }}"
+    group: "{{ user }}"
+
+- name: Install vim-plug plugin manager.
+  get_url:
+    url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    dest: /home/{{ user }}/.vim/autoload/plug.vim
+    owner: "{{ user }}"
+    group: "{{ user }}"
+
+- name: Install vimrc.
+  copy:
+    src: vimrc
+    dest: /home/{{ user }}/.vimrc
+    owner: "{{ user }}"
+    group: "{{ user }}"
+

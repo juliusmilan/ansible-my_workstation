@@ -1,0 +1,32 @@
+---
+# 1] start & enable sshd on target machine
+#
+# 2] install python on target Fedora 29, since it is not present anymore,
+# just python3.
+#
+# 3] set paswordless sudo
+# (visudo -> uncomment: %wheel  ALL=(ALL)       NOPASSWD: ALL
+#              comment: %wheel        ALL=(ALL)       ALL
+
+# run playbook by:
+# $ ansible-playbook -i hosts workstation_playbook.yml
+#
+# to play on localhost:
+# $ ansible-playbook --connection=local --inventory 127.0.0.1, workstation_playbook.yml
+
+# 4] set mail passwords in ~/.mutt/muttrc
+
+- name: Setup Fedora for Julicok.
+  hosts: all
+  become: yes
+  vars:
+      fedora_version: 29
+      user: jmilan
+      mail_pwd: your_pwd
+
+  roles:
+      #     - common
+      #     - vim
+     - dev
+      #     - kernel-dev
+

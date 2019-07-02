@@ -1,0 +1,79 @@
+#!/bin/bash
+
+mode="C"
+
+function print_usage {
+    echo "Usage: update_cscope [OPTION]"
+    echo "Possible options:"
+    echo "  c                   For common C project"
+    echo "  k,   kernel         For Linux kernel"
+    echo "  c++, cpp            For common C++ project"
+}
+
+if [ $# -ge 1 ]; then
+    case "$1" in
+    "c" )
+        mode="C"
+        ;;
+    "k" | "kernel" )
+        mode="kernel"
+        ;;
+    "c++" | "cpp" )
+        mode="C++"
+        ;;
+    *)
+        echo "bad argument:" $1
+        print_usage
+        exit 1
+        ;;
+    esac
+fi
+
+echo "   " $mode "mode."
+
+echo "*** Removing tags/cscope files."
+rm -f tags
+rm -f cscope*
+
+echo "*** Collecting files."
+case "$mode" in
+"C" )
+    find -name "*.[chxsS]" -print0 | xargs -0 -n 1 readlink -fe > cscope.files
+    ;;
+"kernel" )
+    find -path "arch/*" ! -path "arch/i386*" -prune -o               \
+         -path "include/asm-*" ! -path "include/asm-i386*" -prune -o \
+         -path "tmp*" -prune -o                                      \
+         -path "Documentation*" -prune -o                            \
+         -path "scripts*" -prune -o                                  \
+         -path "drivers*" -prune -o                                  \
+         -name "*.[chxsS]"                                           \
+         -print0 | xargs -0 -n 1 readlink -fe > cscope.files
+    ;;
+"C++" )
+    find \( -name "*.[chxsS]" -o \
+            -name "*.c++" -o     \
+            -name "*.cpp" -o     \
+            -name "*.cxx" -o     \
+            -name "*.hpp" -o     \
+            -name "*.hxx"        \)\
+            -print0 | xargs -0 -n 1 readlink -fe  > cscope.files
+    ;;
+esac
+
+echo "*** Running ctags."
+if [ $mode == "C++" ]; then
+    ctags -L cscope.files --c++-kinds=+p --fields=+iaS --extra=+q *
+else
+    ctags -L cscope.files --c-types=+p --fields=+lS *
+fi
+
+echo "*** Running cscope."
+if [ $mode == "kernel" ]; then
+    cscope -bqk
+else
+    cscope -bq
+fi
+
+echo "*** Done."
+

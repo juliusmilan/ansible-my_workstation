@@ -1,0 +1,33 @@
+- name: Install kernel development packages.
+  dnf:
+    name: ['sparse',
+           'mutt']
+
+- name: Create ~/.mutt directory.
+  file:
+    path: /home/{{ user }}/.mutt
+    state: directory
+    owner: "{{ user }}"
+    group: "{{ user }}"
+
+- name: Configure mutt.
+  template:
+    src: muttrc
+    dest: /home/{{ user }}/.mutt/muttrc
+    owner: "{{ user }}"
+    group: "{{ user }}"
+
+- name: Create ~/ws directory.
+  file:
+    path: /home/{{ user }}/ws
+    state: directory
+    owner: "{{ user }}"
+    group: "{{ user }}"
+
+- name: Clone linux kernel repository.
+  git:
+    repo: 'git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git'
+    dest: /home/{{ user }}/ws/linux
+
+    # add branches
+    # try make menuconfig

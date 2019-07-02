@@ -1,0 +1,23 @@
+PS1='$(if [[ $? == 0 ]]; then echo "\[\e[32m\] :)"; else echo "\[\e[31m\]($?)"; fi)\[\e[0m\] \u \w $ '
+
+export GIT_EDITOR=vim
+
+alias ll='ls -l'
+alias la='ls -A'
+alias l='ls -CF'
+
+alias kbuild='sudo make -j4 && sudo make modules_install -j4 && sudo make install -j4'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+alias ......='cd ../../../../..'
+alias psa='ps aux | grep '
+alias f='find . -name '
+alias fc='find . -name "*.[ch]" | xargs grep -F '
+alias fcp='find . -name "*.cpp" | xargs grep -F '
+alias fs='find . -name "*.[sS]" | xargs grep -F '
+alias fm='find . -name "Makefile*" | xargs grep -F '
+alias fp='find . -name "*.py" | xargs grep -F '
+alias g='grep -r '
+alias gg='git grep '

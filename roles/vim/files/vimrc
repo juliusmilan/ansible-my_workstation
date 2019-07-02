@@ -1,0 +1,172 @@
+" /// INDENTATION ///
+
+set cindent
+
+" The width of a TAB is set to 4. Still it is a \t. It is just that Vim will
+" interpret it to be having a width of 4
+set tabstop=4
+" Indents will have a width of 4
+set shiftwidth=4
+" Sets the number of columns for a TAB, deletes spaces by 4, instead of one
+set softtabstop=4
+" Expand TABs to spaces
+set expandtab
+
+"" Linux kernel convention
+"set tabstop=8
+"set shiftwidth=8
+
+
+" /// FUNCTIONALITY ///
+
+" Search for tag file upwards in folder hierarchy, first founded tag file is set
+set tags=./tags;/
+" Allow backspacing over everything in insert mode
+set backspace=indent,eol,start
+" Interactive when typing shell commands
+set shellcmdflag=-ic
+" Intelligent comments
+set comments=sl:/*,mb:\ *,elx:\ */
+" Generic files/patterns to ignore
+set wildignore+=*.o,*.so,*.a,*.pyc,.git,*.swp
+" Change the terminal's title
+set title
+
+" Put all your swap files in the same place. Use // at the end of the filename
+" makes vim use absolute file paths.
+set directory^=$HOME/.vim/swap//
+" Use to see the differences between the current buffer and the file it was loaded from.
+" Great for recovering from swap files, just recover and see differences, if
+" not wanted, just don't write it and close.
+command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_
+                \ | diffthis | wincmd p | diffthis
+
+function UpdateCscope()
+  !update_cscope
+  cscope reset
+endfunction
+
+" To use omni completion, type <C-X><C-O> while open in Insert mode.
+" If matching names are found, a pop-up menu opens which can be navigated using
+" the <C-N> and <C-P> keys.
+set omnifunc=syntaxcomplete#Complete
+
+" Executes shell command and output opens in new buffer, usefull for editing
+" Use by :Shell command
+function! s:ExecuteInShell(command)
+  let command = join(map(split(a:command), 'expand(v:val)'))
+  let winnr = bufwinnr('^' . command . '$')
+  silent! execute  winnr < 0 ? 'botright vnew ' . fnameescape(command) : winnr . 'wincmd w'
+  setlocal buftype=nowrite bufhidden=wipe nobuflisted noswapfile nowrap number
+  echo 'Execute ' . command . '...'
+  silent! execute 'silent %!'. command
+  silent! execute 'resize '
+  silent! redraw
+  silent! execute 'au BufUnload <buffer> execute bufwinnr(' . bufnr('#') . ') . ''wincmd w'''
+  silent! execute 'nnoremap <silent> <buffer> <LocalLeader>r :call <SID>ExecuteInShell(''' . command . ''')<CR>'
+  echo 'Shell command ' . command . ' executed.'
+endfunction
+command! -complete=shellcmd -nargs=+ Shell call s:ExecuteInShell(<q-args>)
+
+
+" /// SHORTCUTS ///
+
+" Paste mode disables all mappings and abbreviations, enable/disable by F2
+set pastetoggle=<F2>
+" Ignore case when searching
+map <F3> :set ignorecase!<cr>
+" Plugin tabularize: tabularize for '=' sign
+map <F4> :Tabularize /=<cr>
+" Plugin syntastic: Display the errors for the current buffer
+map <F6> :Errors<cr>
+map <F7> :!git difftool %<cr>
+"map <F9> :TlistToggle<cr>
+map <F10> :make<cr>
+map <F11> :call UpdateCscope()<cr>
+
+map <C-n> :cnext<cr>
+map <C-l> :clist<cr>
+map <C-p> :cprev<cr>
+map <C-j> :lnext<cr>
+map <C-k> :lprevious<cr>
+
+" Use ,/ to clear the search buffer, no need for /awknadjwnkj anymore
+nmap <silent> ,/ :nohlsearch<cr>
+" Use // to search for visually selected text
+" TODO read https://vim.fandom.com/wiki/Search_for_visually_selected_text
+vnoremap // y/\V<C-r>=escape(@",'/\')<CR><CR>
+" Use w!! to write with sudo
+cmap w!! w !sudo tee % >/dev/null
+
+
+" /// PLUGINS ///
+
+" Specify a directory for plugins
+" - For Neovim: ~/.local/share/nvim/plugged
+" - Avoid using standard Vim directory names like 'plugin'
+call plug#begin('~/.vim/plugged')
+
+Plug 'altercation/vim-colors-solarized'
+Plug 'gnattishness/cscope_maps'
+Plug 'tpope/vim-fugitive'
+Plug 'scrooloose/syntastic'
+Plug 'valloric/ListToggle'
+Plug 'godlygeek/tabular'
+
+" Initialize plugin system
+call plug#end()
+
+
+" /// SOLARIZED THEME ///
+
+syntax enable
+let g:solarized_termcolors=256
+" This gets rid of the grey background
+let g:solarized_termtrans=1
+let g:solarized_visibility="low"
+set background=dark
+colorscheme solarized
+
+
+" /// STYLE ///
+
+set colorcolumn=80
+highlight ColorColumn ctermbg=235
+set list listchars=tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
+" Highlight current line
+set cursorline
+" Highlight all matches for the pattern with a yellow background
+set hlsearch
+" Show the first match for the pattern, while you are still typing it
+set incsearch
+" Turn line numbers on
+set number
+" Highlight matching braces
+set showmatch
+" Show line information in right bottom corner
+set ruler
+" Don't wrap lines, not reading it wrapped anyway
+set nowrap
+" Highlight diffs
+highlight DiffAdd term=reverse cterm=bold ctermbg=LightGreen ctermfg=black
+highlight DiffChange term=reverse cterm=bold ctermbg=cyan ctermfg=black
+highlight DiffText term=reverse cterm=bold ctermbg=red ctermfg=black
+highlight DiffDelete term=reverse cterm=bold ctermbg=red ctermfg=black
+" Highlight trailing whitespace
+highlight ExtraWhitespace ctermbg=Black ctermfg=Grey
+match ExtraWhitespace /\s\+$/
+
+highlight SignColumn ctermbg=black
+
+
+" /// SYNTASTIC PLUGIN ///
+
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 2
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
