@@ -20,13 +20,13 @@
   hosts: all
   become: yes
   vars:
-      fedora_version: 29
+      fedora_version: 30
       user: jmilan
       mail_pwd: your_pwd
 
   roles:
-      #     - common
-      #     - vim
+     - common
+     - vim
      - dev
-      #     - kernel-dev
+     - kernel-dev
 
